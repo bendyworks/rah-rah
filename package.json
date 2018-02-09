@@ -1,0 +1,22 @@
+{
+  "name": "rah-rah",
+  "version": "1.0.0",
+  "description": "Use await while respecting failure cases without exceptions",
+  "main": "lib/index.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "babel-loader": "^8.0.0-beta.0",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "scripts": {
+    "test": "echo \"Tests not implemented\" && exit 1",
+    "start": "cd examples && webpack-dev-server"
+  },
+  "author": "Brad Grzesiak",
+  "license": "Apache-2.0"
+}
