@@ -4,7 +4,9 @@ class RahRah<T, U> {
 
   constructor(successValue?: T, failureValue?: U) {
     if (successValue === null && failureValue === null) {
-      throw new Error("Must provide either success value or failure value");
+      throw new Error("Must provide either success value or failure value; neither was provided");
+    } else if (successValue !== null && failureValue !== null) {
+      throw new Error("Must provide only success value or failure value; both were provided");
     }
     this.yay = successValue;
     this.boo = failureValue;
