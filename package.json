@@ -6,12 +6,12 @@
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "babel-loader": "^8.0.0-beta.0",
+    "@babel/preset-env": "^7.7.7",
+    "babel-loader": "^8.0.6",
     "ts-loader": "^3.5.0",
     "typescript": "^2.7.1",
     "webpack": "^4.41.5",
-    "webpack-dev-server": "^2.11.5"
+    "webpack-dev-server": ">=3.1.11"
   },
   "scripts": {
     "test": "echo \"Tests not implemented\" && exit 1",
