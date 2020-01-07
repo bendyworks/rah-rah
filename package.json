@@ -11,7 +11,7 @@
     "ts-loader": "^3.5.0",
     "typescript": "^2.7.1",
     "webpack": "^4.41.5",
-    "webpack-dev-server": "^2.11.5"
+    "webpack-dev-server": "^3.1.11"
   },
   "scripts": {
     "test": "echo \"Tests not implemented\" && exit 1",
