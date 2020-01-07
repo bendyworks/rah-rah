@@ -49,8 +49,8 @@ async function myFunc() {
   // This way of using rah-rah is totally optional:
 
   result.
-    map(val => doSomething(yay)).
-    mapBoo(val => handleError(val));
+    map(val => doSomething(val)).
+    mapBoo(err => handleError(err));
   // or
   someElement.innerHTML = result.withDefault('N/A');
 }
