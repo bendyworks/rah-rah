@@ -2,14 +2,15 @@
   "name": "rah-rah",
   "version": "1.0.2",
   "description": "Use await while respecting failure cases without exceptions",
-  "main": "lib/rah-rah.ts",
+  "main": "./lib/rah-rah.js",
+  "types": "./lib/rah-rah.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "babel-loader": "^8.0.6",
     "ts-loader": "^3.5.0",
-    "typescript": "^2.7.1",
+    "typescript": "^3.8.3",
     "webpack": "^4.41.5",
     "webpack-dev-server": ">=3.1.11"
   },

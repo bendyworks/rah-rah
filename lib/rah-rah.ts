@@ -1,57 +1,109 @@
-class RahRah<T, U> {
-  readonly yay?: T = null;
-  readonly boo?: U = null;
+// import { Promise } from 'es6-promise';
 
-  constructor(successValue?: T, failureValue?: U) {
-    if (successValue === null && failureValue === null) {
-      throw new Error("Must provide either success value or failure value; neither was provided");
-    } else if (successValue !== null && failureValue !== null) {
-      throw new Error("Must provide only success value or failure value; both were provided");
-    }
-    this.yay = successValue;
-    this.boo = failureValue;
+interface Left<T> {
+  kind: 'left';
+  value: T;
+}
+
+interface Right<U> {
+  kind: 'right';
+  value: U;
+}
+
+type Either<T, U> = Left<T> | Right<U>;
+
+function newLeft<T>(value: T): Left<T> {
+  return { kind: 'left', value };
+}
+
+function newRight<U>(value: U): Right<U> {
+  return { kind: 'right', value };
+}
+
+class RahRah<T, U> {
+  either: Either<T, U>;
+
+  constructor(either: Either<T, U>) {
+    this.either = either;
   }
 
-  static async lift<X, Y>(p: Promise<X>): Promise<RahRah<X, Y>> {
+  static failure<T>(value: T): RahRah<T, never> {
+    return new RahRah<T, never>(newLeft(value));
+  }
+
+  static success<U>(value: U): RahRah<never, U> {
+    return new RahRah<never, U>(newRight(value));
+  }
+
+  static async lift<X, Y>(p: Promise<Y>): Promise<RahRah<X, Y>> {
     return await p
-      .then(success => {
-        return new RahRah(success, null);
+      .then((success: Y) => {
+        return this.success<Y>(success);
       })
-      .catch(failure => {
-        return new RahRah(null, failure);
+      .catch((failure: X) => {
+        return this.failure<X>(failure);
       });
   }
 
-  get good() {
-    return !!this.yay;
+  get good(): boolean {
+    return this.either.kind === 'right';
   }
 
-  get bad() {
-    return !!this.boo;
+  get bad(): boolean {
+    return this.either.kind === 'left';
   }
 
-  withDefault(def: T): T {
-    return this.good ? this.yay : def;
-  }
-
-  map<A>(cb: (val: T) => A) {
-    if (this.good) {
-      return new RahRah(cb(this.yay), null);
-    } else {
-      return this;
+  get yay(): U {
+    switch (this.either.kind) {
+      case 'right':
+        return this.either.value;
+      default:
+        throw 'Not a successful result';
     }
   }
 
-  mapBoo<V>(cb: (val: U) => V) {
-    if (this.good) {
-      return this;
-    } else {
-      return new RahRah<T, V>(null, cb(this.boo));
+  get boo(): T {
+    switch (this.either.kind) {
+      case 'left':
+        return this.either.value;
+      default:
+        throw 'Not a failed result';
+    }
+  }
+
+  withDefault(def: U): U {
+    switch (this.either.kind) {
+      case 'right':
+        return this.either.value;
+      default:
+        return def;
+    }
+  }
+
+  map<B>(cb: (val: U) => B): RahRah<T, B> {
+    switch (this.either.kind) {
+      case 'right':
+        return new RahRah<T, B>(newRight(cb(this.either.value)));
+      case 'left':
+        return new RahRah<T, B>(newLeft(this.either.value));
+    }
+  }
+
+  mapYay<B>(cb: (val: U) => B): RahRah<T, B> {
+    return this.map(cb);
+  }
+
+  mapBoo<A>(cb: (val: T) => A): RahRah<A, U> {
+    switch (this.either.kind) {
+      case 'right':
+        return new RahRah<A, U>(newRight(this.either.value));;
+      case 'left':
+        return new RahRah<A, U>(newLeft(cb(this.either.value)));
     }
   }
 }
 
-let R = function<T, U>(x: Promise<T>): Promise<RahRah<T, U>> {
+let R = function<T, U>(x: Promise<U>): Promise<RahRah<T, U>> {
   return RahRah.lift(x);
 };
 
