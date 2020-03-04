@@ -1,5 +1,3 @@
-// import { Promise } from 'es6-promise';
-
 interface Left<T> {
   kind: 'left';
   value: T;
@@ -77,6 +75,15 @@ class RahRah<T, U> {
         return this.either.value;
       default:
         return def;
+    }
+  }
+
+  flatten<V>(leftCb: (val: T) => V, rightCb: (val: U) => V): V {
+    switch (this.either.kind) {
+      case 'right':
+        return rightCb(this.either.value);
+      case 'left':
+        return leftCb(this.either.value);
     }
   }
 

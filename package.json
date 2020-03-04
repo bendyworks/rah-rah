@@ -1,22 +1,30 @@
 {
   "name": "rah-rah",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Use await while respecting failure cases without exceptions",
   "main": "./lib/rah-rah.js",
   "types": "./lib/rah-rah.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.7.7",
+    "@babel/parser": "^7.8.6",
     "@babel/preset-env": "^7.7.7",
+    "@babel/types": "^7.8.6",
+    "@types/jest": "^25.1.3",
     "babel-loader": "^8.0.6",
+    "jest": "^25.1.0",
+    "jest-diff": "^25.1.0",
+    "pretty-format": "^25.1.0",
+    "ts-jest": "^25.2.1",
     "ts-loader": "^3.5.0",
     "typescript": "^3.8.3",
     "webpack": "^4.41.5",
     "webpack-dev-server": ">=3.1.11"
   },
   "scripts": {
-    "test": "echo \"Tests not implemented\" && exit 1",
-    "start": "cd examples && webpack-dev-server"
+    "test": "npx jest",
+    "start": "cd examples && webpack-dev-server",
+    "build": "tsc --project ./tsconfig.json"
   },
   "author": "Brad Grzesiak",
   "license": "Apache-2.0"
