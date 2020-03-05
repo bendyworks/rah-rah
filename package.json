@@ -1,6 +1,6 @@
 {
   "name": "rah-rah",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Use await while respecting failure cases without exceptions",
   "main": "./lib/rah-rah.js",
   "types": "./lib/rah-rah.d.ts",
