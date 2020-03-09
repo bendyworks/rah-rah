@@ -40,10 +40,18 @@ declare class RahRah<Failure, Success> {
      * Value if the Promise resolved. Throws an exception if called on a
      * rejected object.
      */
+    get ok(): Success;
+    /**
+     * Alias for `ok`
+     */
     get yay(): Success;
     /**
      * Value if the Promise rejected. Throws an exception if called on a
      * resolved object.
+     */
+    get err(): Failure;
+    /**
+     * Alias for `err`
      */
     get boo(): Failure;
     /**
@@ -76,8 +84,8 @@ declare class RahRah<Failure, Success> {
      */
     mapErr<MappedFailure>(cb: (val: Failure) => MappedFailure): RahRah<MappedFailure, Success>;
     /**
-     * Applies the "cb" callback if the Promise resolved.
-     * If the Promise rejected, simply return "this."
+     * Applies the "cb" callback if the Promise rejected.
+     * If the Promise resolved, simply return "this."
      *
      * Alias for "mapErr"
      */

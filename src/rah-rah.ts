@@ -85,7 +85,7 @@ class RahRah<Failure, Success> {
    * Value if the Promise resolved. Throws an exception if called on a
    * rejected object.
    */
-  get yay(): Success {
+  get ok(): Success {
     switch (this.either.kind) {
       case 'right':
         return this.either.value;
@@ -95,16 +95,30 @@ class RahRah<Failure, Success> {
   }
 
   /**
+   * Alias for `ok`
+   */
+  get yay(): Success {
+    return this.ok;
+  }
+
+  /**
    * Value if the Promise rejected. Throws an exception if called on a
    * resolved object.
    */
-  get boo(): Failure {
+  get err(): Failure {
     switch (this.either.kind) {
       case 'left':
         return this.either.value;
       default:
         throw 'Not a failed result';
     }
+  }
+
+  /**
+   * Alias for `err`
+   */
+  get boo(): Failure {
+    return this.err;
   }
 
   /**
@@ -175,8 +189,8 @@ class RahRah<Failure, Success> {
   }
 
   /**
-   * Applies the "cb" callback if the Promise resolved.
-   * If the Promise rejected, simply return "this."
+   * Applies the "cb" callback if the Promise rejected.
+   * If the Promise resolved, simply return "this."
    *
    * Alias for "mapErr"
    */
