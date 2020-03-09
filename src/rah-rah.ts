@@ -135,6 +135,19 @@ class RahRah<Failure, Success> {
   }
 
   /**
+   * If the Promise resolved, returns the resolved value.
+   * If the Promise rejected, applies the passed-in "defFun" function.
+   */
+  applyDefault(defFun: (val: Failure) => Success): Success {
+    switch (this.either.kind) {
+      case 'right':
+        return this.either.value;
+      default:
+        return defFun(this.either.value);
+    }
+  }
+
+  /**
    * Applies "leftCB" if the Promise resolved.
    * Applies "rightCB" if the Promise rejected.
    *

@@ -33,3 +33,23 @@ test('incorrect access of boo', async () => {
   const starting = await R(Promise.resolve('success!'));
   expect(() => starting.boo).toThrow('Not a failed result');
 });
+
+test('withDefault for success', async () => {
+  const starting = await R(Promise.resolve('success!'));
+  expect(starting.withDefault('a default')).toBe('success!');
+});
+
+test('withDefault for failure', async () => {
+  const starting = await R(Promise.reject('failure!'));
+  expect(starting.withDefault('a default')).toBe('a default');
+});
+
+test('applyDefault for success', async () => {
+  const starting = await R(Promise.resolve('success!'));
+  expect(starting.applyDefault((err: string) => `an error: ${err}`)).toBe('success!');
+});
+
+test('applyDefault for failure', async () => {
+  const starting = await R(Promise.reject('failure!'));
+  expect(starting.applyDefault((err: string) => `an error: ${err}`)).toBe('an error: failure!');
+});

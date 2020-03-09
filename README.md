@@ -7,55 +7,168 @@ Use Javascript `await` while respecting failure cases without exceptions.
 If you want to use `await` and still get data from failure cases, you must use `try/catch`:
 
 ```javascript
+// old way
+
 async function myFunc() {
+  let result;
   try {
-    let result = await someAsyncFunc();
+    result = await someAsyncFunc();
     doSomething(result);
   } catch (e) {
     handleError(e);
   }
 }
-```
 
-OK, I guess that doesn't look _terrible_, but how often are your functions that short? Just one or two more lines will start seriously separating the _origin_ of a problem from the _handling_ of the problem.
+// new way with rah-rah
 
-Instead, with RahRah, you can do this:
-
-```javascript
 import { R } from 'rah-rah';
 
 async function myFunc() {
-  let result = await R(someAsyncFunc());
+  const result = await R(someAsyncFunc());
 
   if (result.good) {
-    doSomething(result.yay);
+    doSomething(result.ok);
   } else {
-    handleError(result.boo);
+    handleError(result.err);
   }
 }
-```
 
-Yes, the success value and failure value are named `yay` and `boo` respectively. Because short, meaningful names matter. :)
+// or even
+
+import { R } from 'rah-rah';
+
+async function myFunc(): string {
+  const result = await R(someAsyncFunc());
+
+  return (
+    result
+      .map(doSomething)
+      .mapErr(handleError)
+      .withDefault('n/a')
+  );
+}
+```
 
 If you recognize this kind of thing from the Functional Programming world, it's basically Result/Either mapped inside a Promise... or something like that.
 
-```javascript
+## Usage
+
+### Creation
+
+Insert a call to `R` between `await` and your promise:
+
+```
 import { R } from 'rah-rah';
 
-async function myFunc() {
-  let result = await R(someAsyncFunc());
+const result = await R(aPromise);
+const otherResult = await R(ajaxAsPromise(url));
+```
 
-  // NOTE: If this is confusing to you, don't worry!
-  // This way of using rah-rah is totally optional:
+### Did it fail or succeed?
 
-  result.
-    map(val => doSomething(val)).
-    mapBoo(err => handleError(err));
-  // or
-  someElement.innerHTML = result.withDefault('N/A');
+If you use `withDefault`, `map`, and `mapErr` (shown below), you shouldn't
+need these.
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+if (result.good) {
+  // ...
+} else { ... }
+
+// or
+
+if (result.bad) {
+  // ...
 }
 ```
 
+### Raw results
+
+Use `result.ok` and `result.err`. If you use `withDefault`, `map`, and `mapErr`
+(shown below), you shouldn't need these.
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+if (result.good) {
+  doSomething(result.ok);
+} else { ... }
+
+// or
+
+if (result.bad) {
+  handleError(result.err);
+}
+```
+
+### Collapsing errors
+
+Perhaps you don't care about an error? Or you've correctly handled the error,
+and you'd like to use either a successful value or a default value in the case
+of a failure:
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+return result.withDefault('An error occurred.');
+```
+
+If you want the default to use the underlying error value, use `applyDefault`:
+
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+return result.applyDefault(err => `An error of type '${err.kind}' occurred.`);
+```
+
+### Changing ("map"ing) successful values
+
+Need to change ("map") the successful value? Use `map`:
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+
+result.map(ok => ok.toUpperCase()); // still wrapped in a RahRah object!
+```
+
+
+### Changing ("map"ing) failure values
+
+Need to change ("map") the failure value? Use `mapErr`:
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+
+result.mapErr(err => err.toLowerCase()); // still wrapped in a RahRah object!
+```
+
+### Collapsing errors & results
+
+Perhaps you need to do something with both successful and failure situations,
+and return an unwrapped value:
+
+```
+import { R } from 'rah-rah';
+
+const result = await R(aPromise);
+
+return result.flatten(ok => {
+  return ok.toUpperCase();
+}, err => {
+  informExceptionHandler(err);
+  return err.message.toLowerCase();
+});
+```
 
 ## Installation
 
