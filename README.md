@@ -6,7 +6,7 @@ Use Javascript `await` while respecting failure cases without exceptions.
 
 If you want to use `await` and still get data from failure cases, you must use `try/catch`:
 
-```javascript
+```typescript
 // old way
 
 async function myFunc() {
@@ -57,7 +57,7 @@ If you recognize this kind of thing from the Functional Programming world, it's 
 
 Insert a call to `R` between `await` and your promise:
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 const result = await R(aPromise);
@@ -69,7 +69,7 @@ const otherResult = await R(ajaxAsPromise(url));
 If you use `withDefault`, `map`, and `mapErr` (shown below), you shouldn't
 need these.
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 async function go(aPromise: Promise<...>) {
@@ -91,7 +91,7 @@ async function go(aPromise: Promise<...>) {
 Use `result.ok` and `result.err`. If you use `withDefault`, `map`, and `mapErr`
 (shown below), you shouldn't need these.
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 async function go(aPromise: Promise<...>) {
@@ -114,7 +114,7 @@ Perhaps you don't care about an error? Or you've correctly handled the error,
 and you'd like to use either a successful value or a default value in the case
 of a failure:
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 async function go(aPromise: Promise<string>): Promise<string> {
@@ -126,7 +126,7 @@ async function go(aPromise: Promise<string>): Promise<string> {
 If you want the default to use the underlying error value, use `applyDefault`:
 
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 async function go(aPromise: Promise<string>): Promise<string> {
@@ -139,7 +139,7 @@ async function go(aPromise: Promise<string>): Promise<string> {
 
 Need to change ("map") the successful value? Use `map`:
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 async function go(aPromise: Promise<number>): Promise<RahRah<Error, string>> {
@@ -153,7 +153,7 @@ async function go(aPromise: Promise<number>): Promise<RahRah<Error, string>> {
 
 Need to change ("map") the failure value? Use `mapErr`:
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 async function go(aPromise: Promise<number>): Promise<RahRah<string, number>> {
@@ -167,7 +167,7 @@ async function go(aPromise: Promise<number>): Promise<RahRah<string, number>> {
 Perhaps you need to do something with both successful and failure situations,
 and return an unwrapped value:
 
-```
+```typescript
 import { R } from 'rah-rah';
 
 const result = await R(aPromise);
@@ -197,7 +197,7 @@ This library requires TypeScript, with at least `es2015` compatibility.
 [await-to-js][to] provides a wonderfully simple API that does _nearly_ the
 same thing:
 
-```
+```typescript
 import to from 'await-to-js';
 
 const [err, user] = await to(UserModel.findById(1));
