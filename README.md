@@ -170,8 +170,6 @@ and return an unwrapped value:
 ```typescript
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-
 function double(result: RahRah<Error, number>): string {
   return result.flatten(ok => {
     return `doubled: ${ok * 2}`;
@@ -180,6 +178,9 @@ function double(result: RahRah<Error, number>): string {
     return err.message.toLowerCase();
   });
 }
+
+const result = await R(aPromise);
+console.log(double(result));
 ```
 
 ## Installation
