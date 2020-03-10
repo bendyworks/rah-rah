@@ -72,15 +72,17 @@ need these.
 ```
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-if (result.good) {
-  // ...
-} else { ... }
+async function go(aPromise: Promise<...>) {
+  const result = await R(aPromise);
+  if (result.good) {
+    // ...
+  } else { ... }
 
-// or
+  // or
 
-if (result.bad) {
-  // ...
+  if (result.bad) {
+    // ...
+  }
 }
 ```
 
@@ -92,15 +94,17 @@ Use `result.ok` and `result.err`. If you use `withDefault`, `map`, and `mapErr`
 ```
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-if (result.good) {
-  doSomething(result.ok);
-} else { ... }
+async function go(aPromise: Promise<...>) {
+  const result = await R(aPromise);
+  if (result.good) {
+    doSomething(result.ok);
+  } else { ... }
 
-// or
+  // or
 
-if (result.bad) {
-  handleError(result.err);
+  if (result.bad) {
+    handleError(result.err);
+  }
 }
 ```
 
@@ -113,8 +117,10 @@ of a failure:
 ```
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-return result.withDefault('An error occurred.');
+async function go(aPromise: Promise<string>): Promise<string> {
+  const result = await R(aPromise);
+  return result.withDefault('An error occurred.');
+}
 ```
 
 If you want the default to use the underlying error value, use `applyDefault`:
@@ -123,8 +129,10 @@ If you want the default to use the underlying error value, use `applyDefault`:
 ```
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-return result.applyDefault(err => `An error of type '${err.kind}' occurred.`);
+async function go(aPromise: Promise<string>): Promise<string> {
+  const result = await R(aPromise);
+  return result.applyDefault((err: Error) => `An error of type '${err.name}' occurred.`);
+}
 ```
 
 ### Changing ("map"ing) successful values
@@ -134,9 +142,10 @@ Need to change ("map") the successful value? Use `map`:
 ```
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-
-result.map(ok => ok.toUpperCase()); // still wrapped in a RahRah object!
+async function go(aPromise: Promise<number>): Promise<RahRah<Error, string>> {
+  const result = await R(aPromise);
+  return result.map(ok => `answer: ${ok}`); // still wrapped in a RahRah object!
+}
 ```
 
 
@@ -147,9 +156,10 @@ Need to change ("map") the failure value? Use `mapErr`:
 ```
 import { R } from 'rah-rah';
 
-const result = await R(aPromise);
-
-result.mapErr(err => err.toLowerCase()); // still wrapped in a RahRah object!
+async function go(aPromise: Promise<number>): Promise<RahRah<string, number>> {
+  const result = await R(aPromise);
+  return result.mapErr(err => err.message.toLowerCase()); // still wrapped in a RahRah object!
+}
 ```
 
 ### Collapsing errors & results
@@ -162,20 +172,44 @@ import { R } from 'rah-rah';
 
 const result = await R(aPromise);
 
-return result.flatten(ok => {
-  return ok.toUpperCase();
-}, err => {
-  informExceptionHandler(err);
-  return err.message.toLowerCase();
-});
+function double(result: RahRah<Error, number>): string {
+  return result.flatten(ok => {
+    return `doubled: ${ok * 2}`;
+  }, err => {
+    informExceptionHandler(err);
+    return err.message.toLowerCase();
+  });
+}
 ```
 
 ## Installation
 
 This library requires TypeScript, with at least `es2015` compatibility.
 
+    $ npm install typescript --save-dev
     $ npm install rah-rah --save
 
+
+## Other similar libraries
+
+### await-to-js
+
+[await-to-js][to] provides a wonderfully simple API that does _nearly_ the
+same thing:
+
+```
+import to from 'await-to-js';
+
+const [err, user] = await to(UserModel.findById(1));
+```
+
+The problem is that `await-to-js` assumes that you'll never want to use `null`
+as a real error value; that is, you can never have a `null` value for `err`.
+Similarly, you're disallowed from returning (as unlikely as it is) `undefined`
+as your successful value.
+
+These edge cases are nuanced and very unlikely, but they exist. RahRah avoids
+these edge cases.
 
 ## License
 
@@ -186,3 +220,5 @@ License terms can be found in the LICENSE file.
 RahRah was written by:
 
 * [Brad Grzesiak](https://twitter.com/listrophy) - [Bendyworks](https://bendyworks.com)
+
+[to]: https://github.com/scopsy/await-to-js
