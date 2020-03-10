@@ -60,6 +60,11 @@ declare class RahRah<Failure, Success> {
      */
     withDefault(def: Success): Success;
     /**
+     * If the Promise resolved, returns the resolved value.
+     * If the Promise rejected, applies the passed-in "defFun" function.
+     */
+    applyDefault(defFun: (val: Failure) => Success): Success;
+    /**
      * Applies "leftCB" if the Promise resolved.
      * Applies "rightCB" if the Promise rejected.
      *
@@ -103,4 +108,5 @@ declare class RahRah<Failure, Success> {
  * result.map((x: string) => x.toUpperCase()).withDefault('n/a')
  */
 declare let R: <Failure, Success>(x: Promise<Success>) => Promise<RahRah<Failure, Success>>;
+export default R;
 export { RahRah, R };

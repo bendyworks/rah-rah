@@ -1,7 +1,8 @@
 {
   "name": "rah-rah",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Use await while respecting failure cases without exceptions",
+  "repository": "https://github.com/bendyworks/rah-rah",
   "main": "./lib/rah-rah.js",
   "types": "./lib/rah-rah.d.ts",
   "dependencies": {},
