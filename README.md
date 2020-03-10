@@ -53,6 +53,8 @@ If you recognize this kind of thing from the Functional Programming world, it's 
 
 ## Usage
 
+A simple example app is available in the `examples` folder.
+
 ### Creation
 
 Insert a call to `R` between `await` and your promise:

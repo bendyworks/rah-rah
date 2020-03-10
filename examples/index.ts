@@ -9,29 +9,35 @@ function addDiv(text: string): void {
   document.body.appendChild(el);
 }
 
+// Resolve the passed-in 'val' after 'wait' milliseconds
 async function resolveIt(val: string, wait: number): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    setTimeout(() => resolve(val), wait);
+    setTimeout(() => resolve("" + wait + "ms: resolved with " + val), wait);
   });
 }
 
+// Reject the passed-in 'val' after 'wait' milliseconds
 async function rejectIt(val: string, wait: number): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    setTimeout(() => reject(val), wait);
+    setTimeout(() => reject("" + wait + "ms: rejected with " + val), wait);
   });
 }
 
-async function newResolve(): Promise<any> {
-  // NOTE: we're wrapping with `R`
-  let result = await R(resolveIt("resolved", 1000));
+async function resolveWithRahRah(wait: number): Promise<any> {
+  // Wrap the resolving function with R()
+  let result = await R(resolveIt("RahRah", wait));
 
-  // Using `withDefault`
-  addDiv(result.map(z => z.toUpperCase()).withDefault("default string if failed"));
+  // Map only the success value into Uppercase & provide a default using `withDefault`
+  const output = result
+    .map(z => z.toUpperCase())
+    .withDefault("default string if failed");
+
+  addDiv(output);
 }
 
-async function newReject(): Promise<any> {
+async function rejectWithRahRah(wait: number): Promise<any> {
   // NOTE: the `R` above is just shorthand for `RahRah.lift`
-  let result = await RahRah.lift(rejectIt("rejected", 1500));
+  let result = await RahRah.lift(rejectIt("RahRah", wait));
 
   // Extracting the actual values
   if (result.good) {
@@ -41,23 +47,36 @@ async function newReject(): Promise<any> {
   }
 }
 
-async function oldResolve(): Promise<any> {
+async function resolveWithTryCatch(wait: number): Promise<any> {
   // mimicking `withDefault`
+  let result;
   try {
-    let result = await resolveIt("old resolve", 2000);
-    addDiv(result.toUpperCase());
+    const resolved = await resolveIt("try/catch", wait);
+    result = resolved.toUpperCase();
   } catch (_) {
-    addDiv("default string if failed");
+    result = "default string if failed";
   }
+  addDiv(result);
 }
 
-async function oldReject(): Promise<any> {
+async function rejectWithTryCatch(wait: number): Promise<any> {
+  let result;
   try {
-    let result = await rejectIt("old reject", 2500);
-    addDiv(result);
+    result = await rejectIt("try/catch", wait);
   } catch (e) {
-    addDiv("" + e);
+    result = "" + e;
   }
+  addDiv(result);
 }
 
-Promise.all([newResolve(), newReject(), oldResolve(), oldReject()]);
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('go').addEventListener('click', () => {
+    addDiv('started!');
+    Promise.all([
+      resolveWithRahRah(500),
+      rejectWithRahRah(1000),
+      resolveWithTryCatch(1500),
+      rejectWithTryCatch(2000),
+    ]).then(() => addDiv('finished!'))
+  });
+});

@@ -17,16 +17,17 @@
     "jest-diff": "^25.1.0",
     "pretty-format": "^25.1.0",
     "ts-jest": "^25.2.1",
-    "ts-loader": "^3.5.0",
+    "ts-loader": "^4.3.1",
     "typescript": "^3.8.3",
     "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.11",
     "webpack-dev-server": ">=3.1.11"
   },
   "scripts": {
     "test": "npx jest",
     "start": "cd examples && webpack-dev-server",
     "build": "tsc --project ./tsconfig.json",
-    "release": "npm run build && npm install && npm publish",
+    "release": "npm run build && npm install && npm publish"
   },
   "author": "Brad Grzesiak",
   "license": "Apache-2.0"
