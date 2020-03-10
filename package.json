@@ -25,7 +25,8 @@
   "scripts": {
     "test": "npx jest",
     "start": "cd examples && webpack-dev-server",
-    "build": "tsc --project ./tsconfig.json"
+    "build": "tsc --project ./tsconfig.json",
+    "release": "npm run build && npm install && npm publish",
   },
   "author": "Brad Grzesiak",
   "license": "Apache-2.0"
