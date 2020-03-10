@@ -227,4 +227,5 @@ let R = function<Failure, Success>(x: Promise<Success>): Promise<RahRah<Failure,
   return RahRah.lift(x);
 };
 
+export default R;
 export { RahRah, R };
